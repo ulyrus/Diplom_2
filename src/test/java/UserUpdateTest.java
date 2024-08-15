@@ -25,7 +25,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithAuthEmailTest() {
         UserUpdateSteps.updateWithToken(
-            tokens,
+            tokens.getAccessToken(),
             new User(
                 UUID.randomUUID() + "@example.com",
                 user.getName(),
@@ -37,7 +37,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithAuthNameTest() {
         UserUpdateSteps.updateWithToken(
-            tokens,
+            tokens.getAccessToken(),
             new User(
                 user.getEmail(),
                     UUID.randomUUID().toString(),
@@ -49,7 +49,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithAuthPasswordTest() {
         UserUpdateSteps.updateWithToken(
-            tokens,
+            tokens.getAccessToken(),
             new User(
                 user.getEmail(),
                 user.getName(),

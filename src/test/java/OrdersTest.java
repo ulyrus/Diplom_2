@@ -25,7 +25,7 @@ public class OrdersTest {
 
     @Test
     public void getOrdersAuthorizedTest() {
-        OrdersSteps.getOrdersWithToken(tokens);
+        OrdersSteps.getOrdersWithToken(tokens.getAccessToken());
     }
 
     @Test

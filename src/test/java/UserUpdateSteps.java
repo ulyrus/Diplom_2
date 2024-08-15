@@ -1,7 +1,6 @@
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.ResponseUserUpdate;
-import model.Tokens;
 import model.User;
 import org.junit.Assert;
 
@@ -10,10 +9,10 @@ import static io.restassured.RestAssured.given;
 public class UserUpdateSteps {
 
     @Step("update with token")
-    public static void updateWithToken(Tokens tokens, User userUpdate) {
+    public static void updateWithToken(String accessToken, User userUpdate) {
         Response response = given()
                 .header("Content-Type", "application/json")
-                .header("Authorization", tokens.getAccessToken())
+                .header("Authorization", accessToken)
                 .body(userUpdate)
                 .patch(Api.AUTH_USER);
         CommonSteps.validateStatus(response, 200);
