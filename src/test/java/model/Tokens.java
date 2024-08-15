@@ -1,10 +1,12 @@
+package model;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ApiTokens {
+public class Tokens {
     private String accessToken;
     private String refreshToken;
-    private ApiUser user;
+    private User user;
 }

@@ -1,11 +1,13 @@
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import model.Tokens;
+import model.User;
 
 import static io.restassured.RestAssured.given;
 
 public class CreateUserSteps {
     @Step("make create user request")
-    public static Response createUserResponse(ApiUser user) {
+    public static Response createUserResponse(User user) {
         return given()
                 .header("Content-Type", "application/json")
                 .body(user)
@@ -13,15 +15,15 @@ public class CreateUserSteps {
     }
 
     @Step("create unique user")
-    public static ApiTokens createUniqueUser(ApiUser user) {
+    public static Tokens createUniqueUser(User user) {
         Response response = createUserResponse(user);
         CommonSteps.validateStatus(response, 200);
         CommonSteps.validateSuccess(response, true);
-        return Api.gson.fromJson(response.asString(), ApiTokens.class);
+        return Api.gson.fromJson(response.asString(), Tokens.class);
     }
 
     @Step("create non unique user")
-    public static void createNonUniqueUser(ApiUser user) {
+    public static void createNonUniqueUser(User user) {
         Response response = createUserResponse(user);
         CommonSteps.validateStatus(response, 403);
         CommonSteps.validateSuccess(response, false);
@@ -29,7 +31,7 @@ public class CreateUserSteps {
     }
 
     @Step("create user with some empty required field")
-    public static void createUserWithEmptyFields(ApiUser user) {
+    public static void createUserWithEmptyFields(User user) {
         Response response = createUserResponse(user);
         CommonSteps.validateStatus(response, 403);
         CommonSteps.validateSuccess(response, false);
@@ -37,7 +39,7 @@ public class CreateUserSteps {
     }
 
     @Step("delete user")
-    public static void deleteUser(ApiTokens tokens) {
+    public static void deleteUser(Tokens tokens) {
         given()
                 .header("Content-Type", "application/json")
                 .header("Authorization", tokens.getAccessToken())

@@ -1,3 +1,5 @@
+package model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -5,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ApiUser {
+public class User {
     private String email;
     private String name;
     private String password;

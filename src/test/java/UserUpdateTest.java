@@ -1,4 +1,6 @@
 import io.restassured.RestAssured;
+import model.Tokens;
+import model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,12 +9,12 @@ import java.util.UUID;
 
 public class UserUpdateTest {
 
-    private final ApiUser user = new ApiUser(
+    private final User user = new User(
             UUID.randomUUID() + "@example.com",
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString()
     );
-    private ApiTokens tokens;
+    private Tokens tokens;
 
     @Before
     public void setUp() {
@@ -24,7 +26,7 @@ public class UserUpdateTest {
     public void updateWithAuthEmailTest() {
         UserUpdateSteps.updateWithToken(
             tokens,
-            new ApiUser(
+            new User(
                 UUID.randomUUID() + "@example.com",
                 user.getName(),
                 user.getPassword()
@@ -36,7 +38,7 @@ public class UserUpdateTest {
     public void updateWithAuthNameTest() {
         UserUpdateSteps.updateWithToken(
             tokens,
-            new ApiUser(
+            new User(
                 user.getEmail(),
                     UUID.randomUUID().toString(),
                 user.getPassword()
@@ -48,7 +50,7 @@ public class UserUpdateTest {
     public void updateWithAuthPasswordTest() {
         UserUpdateSteps.updateWithToken(
             tokens,
-            new ApiUser(
+            new User(
                 user.getEmail(),
                 user.getName(),
                     UUID.randomUUID().toString()
@@ -59,7 +61,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithoutTokenAuthEmailTest() {
         UserUpdateSteps.updateWithoutToken(
-                new ApiUser(
+                new User(
                         UUID.randomUUID() + "@example.com",
                         user.getName(),
                         user.getPassword()
@@ -70,7 +72,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithoutTokenAuthNameTest() {
         UserUpdateSteps.updateWithoutToken(
-                new ApiUser(
+                new User(
                         user.getEmail(),
                         UUID.randomUUID().toString(),
                         user.getPassword()
@@ -81,7 +83,7 @@ public class UserUpdateTest {
     @Test
     public void updateWithoutTokenAuthPasswordTest() {
         UserUpdateSteps.updateWithoutToken(
-                new ApiUser(
+                new User(
                         user.getEmail(),
                         user.getName(),
                         UUID.randomUUID().toString()

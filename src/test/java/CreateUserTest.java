@@ -1,4 +1,6 @@
 import io.restassured.RestAssured;
+import model.Tokens;
+import model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +10,7 @@ import java.util.UUID;
 
 public class CreateUserTest {
 
-    private final ArrayList<ApiTokens> createdUsersTokens = new ArrayList<>();
+    private final ArrayList<Tokens> createdUsersTokens = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -17,30 +19,30 @@ public class CreateUserTest {
 
     @Test
     public void createUniqueUserTest() {
-        ApiUser user = new ApiUser(
+        User user = new User(
                 UUID.randomUUID() + "@example.com",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()
         );
-        ApiTokens tokens = CreateUserSteps.createUniqueUser(user);
+        Tokens tokens = CreateUserSteps.createUniqueUser(user);
         createdUsersTokens.add(tokens);
     }
 
     @Test
     public void createAlreadyRegisteredUserTest() {
-        ApiUser user = new ApiUser(
+        User user = new User(
                 UUID.randomUUID() + "@example.com",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()
         );
-        ApiTokens tokens = CreateUserSteps.createUniqueUser(user);
+        Tokens tokens = CreateUserSteps.createUniqueUser(user);
         createdUsersTokens.add(tokens);
         CreateUserSteps.createNonUniqueUser(user);
     }
 
     @Test
     public void createUserWithoutEmailTest() {
-        ApiUser user = new ApiUser(
+        User user = new User(
                 "",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()
@@ -50,7 +52,7 @@ public class CreateUserTest {
 
     @Test
     public void createUserWithoutNameTest() {
-        ApiUser user = new ApiUser(
+        User user = new User(
                 UUID.randomUUID() + "@example.com",
                 "",
                 UUID.randomUUID().toString()
@@ -60,7 +62,7 @@ public class CreateUserTest {
 
     @Test
     public void createUserWithoutPasswordTest() {
-        ApiUser user = new ApiUser(
+        User user = new User(
                 UUID.randomUUID() + "@example.com",
                 UUID.randomUUID().toString(),
                 ""
@@ -70,7 +72,7 @@ public class CreateUserTest {
 
     @After
     public void tearDown() {
-        for (ApiTokens tokens : createdUsersTokens) {
+        for (Tokens tokens : createdUsersTokens) {
             CreateUserSteps.deleteUser(tokens);
         }
         createdUsersTokens.clear();

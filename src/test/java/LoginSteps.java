@@ -1,5 +1,6 @@
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import model.User;
 import org.hamcrest.CoreMatchers;
 
 import static io.restassured.RestAssured.given;
@@ -7,7 +8,7 @@ import static io.restassured.RestAssured.given;
 public class LoginSteps {
 
     @Step("login")
-    public static void login(ApiUser user) {
+    public static void login(User user) {
         Response response = given()
                 .header("Content-Type", "application/json")
                 .body(user)
@@ -18,7 +19,7 @@ public class LoginSteps {
     }
 
     @Step("login")
-    public static void loginWrongCredentials(ApiUser user) {
+    public static void loginWrongCredentials(User user) {
         Response response = given()
                 .header("Content-Type", "application/json")
                 .body(user)

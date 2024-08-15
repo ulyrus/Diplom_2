@@ -1,4 +1,6 @@
 import io.restassured.RestAssured;
+import model.Tokens;
+import model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,13 +9,13 @@ import java.util.UUID;
 
 public class OrdersTest {
 
-    private ApiTokens tokens;
+    private Tokens tokens;
 
     @Before
     public void setUp() {
         RestAssured.baseURI = Api.BASE_URL;
         tokens = CreateUserSteps.createUniqueUser(
-            new ApiUser(
+            new User(
                 UUID.randomUUID() + "@example.com",
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()

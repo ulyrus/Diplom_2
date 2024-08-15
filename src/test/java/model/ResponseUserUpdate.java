@@ -1,3 +1,5 @@
+package model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -5,8 +7,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ApiAuthOrRegister {
+public class ResponseUserUpdate {
     private boolean success;
-    private String accessToken;
-    private String refreshToken;
+    private String message;
+    private User user;
 }

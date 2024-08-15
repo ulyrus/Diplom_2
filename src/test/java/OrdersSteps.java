@@ -1,5 +1,6 @@
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import model.Tokens;
 
 import java.util.HashMap;
 
@@ -8,7 +9,7 @@ import static io.restassured.RestAssured.given;
 public class OrdersSteps {
 
     @Step("get orders")
-    private static void getOrders(ApiTokens tokens) {
+    private static void getOrders(Tokens tokens) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         if (tokens != null) {
@@ -27,7 +28,7 @@ public class OrdersSteps {
     }
 
     @Step("get orders with token")
-    public static void getOrdersWithToken(ApiTokens tokens) {
+    public static void getOrdersWithToken(Tokens tokens) {
         getOrders(tokens);
     }
 
