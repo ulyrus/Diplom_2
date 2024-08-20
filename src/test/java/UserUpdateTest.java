@@ -1,99 +1,59 @@
-import io.restassured.RestAssured;
-import model.Tokens;
-import model.User;
-import org.junit.After;
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
+import org.example.User;
 import org.junit.Before;
 import org.junit.Test;
+import steps.UserUpdateSteps;
 
 import java.util.UUID;
 
-public class UserUpdateTest {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 
-    private final User user = new User(
-            UUID.randomUUID() + "@example.com",
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString()
-    );
-    private Tokens tokens;
+public class UserUpdateTest extends BaseTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = Api.BASE_URL;
-        tokens = CreateUserSteps.createUniqueUser(user);
+        createUser();
     }
 
     @Test
+    @DisplayName("Изменение данных с авторизацией")
     public void updateWithAuthEmailTest() {
-        UserUpdateSteps.updateWithToken(
-            tokens.getAccessToken(),
-            new User(
+        User userUpdated = new User(
                 UUID.randomUUID() + "@example.com",
                 user.getName(),
                 user.getPassword()
-            )
         );
+        Response response = UserUpdateSteps.update(createdUserTokens.getAccessToken(), userUpdated);
+        response.then().statusCode(HttpStatus.SC_OK)
+                .and()
+                .assertThat().body("success", is(true))
+                .and()
+                .assertThat().body("user.name", equalTo(userUpdated.getName()))
+                .and()
+                .assertThat().body("user.email", equalTo(userUpdated.getEmail()));
     }
 
     @Test
-    public void updateWithAuthNameTest() {
-        UserUpdateSteps.updateWithToken(
-            tokens.getAccessToken(),
-            new User(
-                user.getEmail(),
-                    UUID.randomUUID().toString(),
-                user.getPassword()
-            )
-        );
-    }
-
-    @Test
-    public void updateWithAuthPasswordTest() {
-        UserUpdateSteps.updateWithToken(
-            tokens.getAccessToken(),
-            new User(
-                user.getEmail(),
-                user.getName(),
-                    UUID.randomUUID().toString()
-            )
-        );
-    }
-
-    @Test
-    public void updateWithoutTokenAuthEmailTest() {
-        UserUpdateSteps.updateWithoutToken(
+    @DisplayName("Изменение данных без авторизации")
+    public void updateWithoutAuthTokenTest() {
+        Response response = UserUpdateSteps.update(
+                null,
                 new User(
                         UUID.randomUUID() + "@example.com",
                         user.getName(),
                         user.getPassword()
                 )
         );
+        response.then().statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .and()
+                .assertThat().body("success", is(false))
+                .and()
+                .assertThat().body("message", equalTo(MESSAGE_ON_ERROR));
     }
 
-    @Test
-    public void updateWithoutTokenAuthNameTest() {
-        UserUpdateSteps.updateWithoutToken(
-                new User(
-                        user.getEmail(),
-                        UUID.randomUUID().toString(),
-                        user.getPassword()
-                )
-        );
-    }
-
-    @Test
-    public void updateWithoutTokenAuthPasswordTest() {
-        UserUpdateSteps.updateWithoutToken(
-                new User(
-                        user.getEmail(),
-                        user.getName(),
-                        UUID.randomUUID().toString()
-                )
-        );
-    }
-
-    @After
-    public void tearDown() {
-        CreateUserSteps.deleteUser(tokens);
-    }
+    private final static String MESSAGE_ON_ERROR = "You should be authorised";
 }
 

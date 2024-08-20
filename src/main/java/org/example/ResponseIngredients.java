@@ -1,14 +1,16 @@
-package model;
+package org.example;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResponseUserUpdate {
+public class ResponseIngredients {
     private boolean success;
+    private List<Ingredient> data;
     private String message;
-    private User user;
 }

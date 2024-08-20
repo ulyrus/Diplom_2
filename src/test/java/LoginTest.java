@@ -1,42 +1,42 @@
-import io.restassured.RestAssured;
-import model.Tokens;
-import model.User;
-import org.junit.After;
+import io.qameta.allure.junit4.DisplayName;
+import org.apache.http.HttpStatus;
+import org.example.User;
 import org.junit.Before;
 import org.junit.Test;
+import steps.LoginSteps;
 
-import java.util.UUID;
+import static org.hamcrest.CoreMatchers.*;
 
-public class LoginTest {
-
-    private final User user = new User(
-        UUID.randomUUID() + "@example.com",
-        UUID.randomUUID().toString(),
-        UUID.randomUUID().toString()
-    );
-
-    private Tokens createdUserTokens;
+public class LoginTest extends BaseTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = Api.BASE_URL;
-        createdUserTokens = CreateUserSteps.createUniqueUser(user);
+       createUser();
     }
 
     @Test
+    @DisplayName("логин под существующим пользователем")
     public void loginExistUserTest() {
-        LoginSteps.login(user);
+        LoginSteps.login(user)
+                .then().statusCode(HttpStatus.SC_OK)
+                .and()
+                .assertThat().body("success", is(true))
+                .and()
+                .assertThat().body("user", notNullValue());
     }
 
     @Test
+    @DisplayName("логин с неверным логином и паролем")
     public void loginNonExistUserTest() {
         User notExistUser = new User(user.getEmail(), null, "");
-        LoginSteps.loginWrongCredentials(notExistUser);
+        LoginSteps.login(notExistUser)
+                .then().statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .and()
+                .assertThat().body("success", is(false))
+                .and()
+                .assertThat().body("message", equalTo(MESSAGE_ON_ERROR));
     }
 
-    @After
-    public void tearDown() {
-        CreateUserSteps.deleteUser(createdUserTokens);
-    }
+    private final static String MESSAGE_ON_ERROR = "email or password are incorrect";
 }
 

@@ -1,41 +1,44 @@
-import io.restassured.RestAssured;
-import model.Tokens;
-import model.User;
-import org.junit.After;
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
+import org.hamcrest.core.IsIterableContaining;
 import org.junit.Before;
 import org.junit.Test;
+import steps.OrdersSteps;
 
-import java.util.UUID;
+import static org.hamcrest.CoreMatchers.*;
 
-public class OrdersTest {
-
-    private Tokens tokens;
+public class OrdersTest extends BaseTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = Api.BASE_URL;
-        tokens = CreateUserSteps.createUniqueUser(
-            new User(
-                UUID.randomUUID() + "@example.com",
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString()
-            )
-        );
+        createUser();
     }
 
     @Test
+    @DisplayName("Получение заказов авторизованного пользователя")
     public void getOrdersAuthorizedTest() {
-        OrdersSteps.getOrdersWithToken(tokens.getAccessToken());
+        validateResponse(OrdersSteps.getOrders(createdUserTokens.getAccessToken()));
     }
 
     @Test
+    @DisplayName("Получение заказов без авторизации")
     public void getOrdersNotAuthorizedTest() {
-        OrdersSteps.getOrdersWithoutToken();
+        validateResponse(OrdersSteps.getOrders(null));
     }
 
-    @After
-    public void tearDown() {
-        CreateUserSteps.deleteUser(tokens);
+    private void validateResponse(Response response) {
+        response
+                .then().statusCode(HttpStatus.SC_OK)
+                .and()
+                .assertThat().body("success", is(true))
+                .and()
+                .assertThat().body("orders", IsIterableContaining.hasItems(notNullValue()))
+                .and()
+                .assertThat().body("total", isA(Integer.class))
+                .and()
+                .assertThat().body("totalToday", isA(Integer.class));
     }
+
 }
 

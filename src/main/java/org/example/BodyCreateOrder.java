@@ -1,12 +1,14 @@
-package model;
+package org.example;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @Setter
-public class Ingredient {
-    private String _id;
+public class BodyCreateOrder {
+    private List<String> ingredients;
 }
